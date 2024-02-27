@@ -14,6 +14,19 @@ const creativeCard = {
       throw error;
     }
   },
+  create: async (data) => {
+    try {
+      const response = await axios.post('/quizCards', data);
+      if (response.status !== 201) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error('Error creating quiz card:', error.message);
+      throw error;
+    }
+  },
 };
 
 export default creativeCard;
