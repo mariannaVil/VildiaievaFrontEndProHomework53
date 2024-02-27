@@ -19,7 +19,7 @@ const QuizCard = ({
 
   return (
     <>
-      <CardWrapper>
+      <CardWrapper data-testid='cardWrapper'>
         <Card>
           <CardMedia
            sx={{
