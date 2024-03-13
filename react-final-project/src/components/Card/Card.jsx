@@ -1,7 +1,7 @@
 import {
   Card, CardActions, CardContent, CardMedia, Button, Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CardWrapper, DescriptionTypography } from './styled';
 import QuizModal from '../Modals/QuizModal';
@@ -12,10 +12,28 @@ const QuizCard = ({
 }) => {
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  // Читання обраних карток з локального сховища при завантаженні компонента
+  useEffect(() => {
+    const favoritesFromStorage = JSON.parse(localStorage.getItem('favorites')) || [];
+    setIsFavorite(favoritesFromStorage.includes(id));
+  }, [id]);
+
+  // Оновлення локального сховища при зміні стану обраних карток
+  useEffect(() => {
+    const favoritesFromStorage = JSON.parse(localStorage.getItem('favorites')) || [];
+    const updatedFavorites = isFavorite
+      ? [...favoritesFromStorage, id]
+      : favoritesFromStorage.filter((favId) => favId !== id);
+
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+  }, [isFavorite, id]);
 
   const handleStartClick = () => navigate(`/quizCards/${id}`);
   const handleShowClick = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
+  const handleFavorite = () => setIsFavorite(!isFavorite);
 
   return (
     <>
@@ -46,6 +64,9 @@ const QuizCard = ({
             </Button>
             <Button className='show' size='small' onClick={handleShowClick}>
               Show More
+            </Button>
+            <Button className='favorite' size='small'onClick={handleFavorite}>
+              {isFavorite ? '❤️' : '🤍'}
             </Button>
           </CardActions>
         </Card>
